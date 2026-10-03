@@ -36,7 +36,7 @@ from urllib.parse import quote
 from urllib.parse import urlparse
 from flask import Flask, request, Response, jsonify, stream_with_context
 
-# musicdl 源码查找顺序（找到含 musicdl/__init__.py 的目录即加入 sys.path 最前）:
+# musicdl 源码查找（仅源码运行时需要; exe 打包后 musicdl 已编译进程序内部）:
 #   1. gui/vendor/                 —— 推荐的随包分发位置
 #   2. gui/musicdl-master/         —— GitHub 下载的源码 zip 直接解压进 gui 目录
 #   3. gui 的上级目录              —— 仓库开发模式（gui 位于 musicdl 仓库内）
@@ -56,7 +56,7 @@ def _locate_musicdl_root():
     return None
 
 
-_musicdl_root = _locate_musicdl_root()
+_musicdl_root = None if getattr(sys, 'frozen', False) else _locate_musicdl_root()
 if _musicdl_root and _musicdl_root not in sys.path:
     sys.path.insert(0, _musicdl_root)
 
@@ -66,9 +66,17 @@ from musicdl import musicdl
 # ---------------------------------------------------------------------------
 # 配置
 # ---------------------------------------------------------------------------
-HERE = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.realpath(os.path.join(HERE, 'static'))
-DOWNLOAD_DIR = os.path.realpath(os.path.join(HERE, 'downloads'))
+# 打包为 exe (PyInstaller) 时的路径约定:
+#   - 只读资源 (static/) 在 sys._MEIPASS 解包目录;
+#   - 可写目录 (downloads/) 放在 exe 旁边, 方便用户找到下载的文件。
+if getattr(sys, 'frozen', False):
+    _BASE_DIR = os.path.dirname(os.path.abspath(sys.executable))
+    _RESOURCE_DIR = getattr(sys, '_MEIPASS', _BASE_DIR)
+else:
+    _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    _RESOURCE_DIR = _BASE_DIR
+STATIC_DIR = os.path.realpath(os.path.join(_RESOURCE_DIR, 'static'))
+DOWNLOAD_DIR = os.path.realpath(os.path.join(_BASE_DIR, 'downloads'))
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 # 启动时清理上次运行残留的孤儿临时文件（如进程被杀时正在下载的 .part）

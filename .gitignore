@@ -12,6 +12,11 @@ musicdl_outputs/
 __pycache__/
 *.pyc
 
+# PyInstaller 打包产物（exe 太大不入库，用 打包成exe.bat 本地生成）
+build/
+dist/
+*.spec
+
 # 编辑器/系统
 .mimosa/
 .vscode/
