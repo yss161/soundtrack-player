@@ -41,7 +41,7 @@ py -3.14 -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn
 py -3.14 app.py
 ```
 
-浏览器打开 **http://127.0.0.1:5000**。可用 `PORT=8080 py -3.14 app.py` 更换端口；`NO_BROWSER=1` 禁止自动开浏览器。
+浏览器打开 **http://127.0.0.1:5000** 可用 `PORT=8080 py -3.14 app.py` 更换端口；`NO_BROWSER=1` 禁止自动开浏览器。
 
 > 需要能正常访问各音乐平台的网络环境。本工具仅供学习研究，请尊重版权与各平台服务条款。
 
