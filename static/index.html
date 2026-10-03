@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>声轨 · Soundtrack</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%237c6cff'/%3E%3Cpath d='M21 8v11.2a3.6 3.6 0 1 1-2-3.2V11l-7 1.6v8.6a3.6 3.6 0 1 1-2-3.2V10.5L21 8z' fill='white'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="app" class="app">
+
+  <!-- ══════════ 侧边栏 ══════════ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 32 32" width="26" height="26"><circle cx="16" cy="16" r="15" fill="url(#lg)"/><path d="M21 8v11.2a3.6 3.6 0 1 1-2-3.2V11l-7 1.6v8.6a3.6 3.6 0 1 1-2-3.2V10.5L21 8z" fill="white"/><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c6cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs></svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-name">声轨</div>
+        <div class="brand-sub">Soundtrack</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="search">
+        <span class="nav-ico">⌕</span><span class="nav-label">搜索</span>
+      </button>
+      <button class="nav-item" data-view="favorites">
+        <span class="nav-ico">♥</span><span class="nav-label">收藏</span>
+        <span class="nav-badge hidden" id="fav-badge">0</span>
+      </button>
+      <button class="nav-item" data-view="queue">
+        <span class="nav-ico">☰</span><span class="nav-label">播放队列</span>
+        <span class="nav-badge hidden" id="queue-badge">0</span>
+      </button>
+      <button class="nav-item" data-view="downloads">
+        <span class="nav-ico">⭳</span><span class="nav-label">下载</span>
+        <span class="nav-badge hidden" id="dl-nav-badge">0</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="now-mini" id="now-mini" title="正在播放">
+        <span class="mini-eq"><i></i><i></i><i></i></span>
+        <span class="mini-text" id="now-mini-text">未在播放</span>
+      </div>
+      <p class="credits">powered by <b>musicdl</b><br>仅供学习研究 · 请尊重版权</p>
+    </div>
+  </aside>
+
+  <!-- ══════════ 右侧主区 ══════════ -->
+  <div class="main-wrap">
+
+    <!-- 顶栏: 搜索 + 音源 -->
+    <header class="topbar">
+      <form id="search-form" class="search-form" autocomplete="off">
+        <span class="search-icon">
+          <svg viewBox="0 0 24 24" width="17" height="17"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <input id="search-input" type="text" placeholder="搜索歌曲、歌手或专辑…" spellcheck="false">
+        <button id="search-btn" type="submit">搜索</button>
+        <div id="history-panel" class="history-panel hidden">
+          <div class="history-head">
+            <span>搜索历史</span>
+            <button type="button" id="history-clear">清空</button>
+          </div>
+          <ul id="history-list"></ul>
+        </div>
+      </form>
+      <div id="source-chips" class="source-chips"></div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main id="main" class="main">
+
+      <!-- 视图: 搜索 -->
+      <section id="view-search" class="view">
+        <!-- 欢迎屏 -->
+        <div id="welcome" class="welcome">
+          <div class="welcome-hero">
+            <div class="welcome-disc"><span></span></div>
+            <h1>声轨 <span>Soundtrack</span></h1>
+            <p>基于 musicdl 的多源音乐搜索 · 在线试听 · 高速下载</p>
+          </div>
+          <div class="try-chips">
+            <span class="try-label">试试搜索：</span>
+            <button data-kw="周杰伦">周杰伦</button>
+            <button data-kw="林俊杰">林俊杰</button>
+            <button data-kw="邓紫棋">邓紫棋</button>
+            <button data-kw="Taylor Swift">Taylor Swift</button>
+            <button data-kw="纯音乐 钢琴">纯音乐 · 钢琴</button>
+          </div>
+          <div class="feature-cards">
+            <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">流式搜索</div><div class="feature-desc">多音源并发，结果逐条实时浮现，无需整页等待。</div></div>
+            <div class="feature-card"><div class="feature-icon">▶</div><div class="feature-title">即点即放</div><div class="feature-desc">搜索时已解析直链，点击立刻播放，支持进度拖动。</div></div>
+            <div class="feature-card"><div class="feature-icon">◎</div><div class="feature-title">无损音质</div><div class="feature-desc">FLAC / WAV 无损格式以标签标识，一听便知。</div></div>
+            <div class="feature-card"><div class="feature-icon">词</div><div class="feature-title">同步歌词</div><div class="feature-desc">播放时逐行高亮滚动，点击歌词行可跳转进度。</div></div>
+          </div>
+          <p class="welcome-foot">快捷键：<kbd>空格</kbd> 播放/暂停 · <kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd> 切歌 · 双击曲目播放 · <kbd>♥</kbd> 收藏</p>
+        </div>
+
+        <!-- 搜索结果 -->
+        <div id="results" class="results hidden">
+          <div class="results-head">
+            <div class="results-title">
+              <h2 id="results-kw"></h2>
+              <div class="searching-indicator hidden" id="searching-indicator"><span class="mini-spinner"></span><span>正在搜索…</span></div>
+            </div>
+            <div class="results-tools">
+              <span id="results-count" class="results-count"></span>
+              <button id="btn-playall" class="ghost-btn">▶ 全部播放</button>
+            </div>
+          </div>
+          <div id="source-status" class="source-status"></div>
+          <div class="tracklist-head">
+            <span class="t-idx">#</span><span class="t-song">歌曲</span><span class="t-album">专辑</span><span class="t-dur">时长</span><span class="t-size">大小</span><span class="t-act-box"></span>
+          </div>
+          <ul id="track-list" class="track-list"></ul>
+          <div id="results-empty" class="results-empty hidden">没有找到相关歌曲，换个关键词或启用更多音源试试。</div>
+        </div>
+      </section>
+
+      <!-- 视图: 收藏 -->
+      <section id="view-favorites" class="view hidden">
+        <div class="view-head">
+          <h2>♥ 我的收藏</h2>
+          <div class="view-head-tools">
+            <span id="fav-count" class="muted"></span>
+            <button id="fav-playall" class="ghost-btn">▶ 全部播放</button>
+          </div>
+        </div>
+        <div class="tracklist-head">
+          <span class="t-idx">#</span><span class="t-song">歌曲</span><span class="t-album">专辑</span><span class="t-dur">时长</span><span class="t-size">大小</span><span class="t-act-box"></span>
+        </div>
+        <ul id="fav-list" class="track-list"></ul>
+        <div id="fav-empty" class="results-empty">还没有收藏。点击搜索结果行上的 <b>♥</b> 即可收藏喜欢的歌曲。</div>
+      </section>
+
+      <!-- 视图: 播放队列 -->
+      <section id="view-queue" class="view hidden">
+        <div class="view-head">
+          <h2>☰ 播放队列</h2>
+          <div class="view-head-tools">
+            <span id="queue-count" class="muted"></span>
+            <button id="queue-clear" class="ghost-btn">清空队列</button>
+          </div>
+        </div>
+        <ul id="queue-list" class="queue-list"></ul>
+        <div id="queue-empty" class="results-empty">队列为空。播放任意歌曲后，当前搜索结果会成为播放队列。</div>
+      </section>
+
+      <!-- 视图: 下载 -->
+      <section id="view-downloads" class="view hidden">
+        <div class="view-head">
+          <h2>⭳ 下载管理</h2>
+          <div class="view-head-tools">
+            <span class="muted">保存于 gui/downloads/</span>
+            <button id="dl-clear-finished" class="ghost-btn">清除已完成</button>
+          </div>
+        </div>
+        <ul id="download-list" class="download-list"></ul>
+        <div id="downloads-empty" class="results-empty">暂无下载任务。点击搜索结果中的 ⭳ 开始下载，<br>完成后可点击「保存到本地」将文件取回。</div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ══════════ 歌词面板 ══════════ -->
+  <aside id="lyrics-panel" class="lyrics-panel">
+    <div class="lyrics-head">
+      <span class="lyrics-title">歌词</span>
+      <button id="lyrics-close" class="icon-btn" title="关闭">✕</button>
+    </div>
+    <div class="lyrics-body">
+      <div class="lyrics-cover-wrap">
+        <img id="lyrics-cover" alt="封面" draggable="false">
+        <div class="lyrics-cover-fallback">♪</div>
+        <div class="vinyl-groove"></div>
+      </div>
+      <div id="lyrics-song" class="lyrics-song"></div>
+      <div id="lyrics-artist" class="lyrics-artist"></div>
+      <div id="lyrics-scroll" class="lyrics-scroll"><div id="lyrics-container" class="lyrics-container"></div></div>
+    </div>
+  </aside>
+
+  <!-- ══════════ 底部播放条 ══════════ -->
+  <footer id="player" class="player" data-empty="true">
+    <div class="player-left" id="player-left" title="打开歌词">
+      <div class="player-cover" id="player-cover"><span class="cover-fallback">♪</span></div>
+      <div class="player-meta">
+        <div class="player-title" id="player-title">未在播放</div>
+        <div class="player-artist" id="player-artist">搜索一首歌开始吧</div>
+      </div>
+    </div>
+    <div class="player-center">
+      <div class="player-controls">
+        <button id="btn-loop" class="pc-btn" title="播放模式：列表循环">🔁</button>
+        <button id="btn-prev" class="pc-btn" title="上一首 (Alt+←)">⏮</button>
+        <button id="btn-play" class="pc-play" title="播放/暂停 (空格)">
+          <svg class="ic-play" viewBox="0 0 24 24" width="26" height="26"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          <svg class="ic-pause" viewBox="0 0 24 24" width="26" height="26"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
+        </button>
+        <button id="btn-next" class="pc-btn" title="下一首 (Alt+→)">⏭</button>
+        <button id="btn-lyrics" class="pc-btn pc-lyrics" title="歌词">词</button>
+      </div>
+      <div class="player-seek">
+        <span id="time-cur" class="time">00:00</span>
+        <div id="seek-bar" class="seek-bar">
+          <div class="seek-buffer" id="seek-buffer"></div>
+          <div class="seek-fill" id="seek-fill"></div>
+          <div class="seek-thumb" id="seek-thumb"></div>
+        </div>
+        <span id="time-total" class="time">00:00</span>
+      </div>
+    </div>
+    <div class="player-right">
+      <canvas id="spectrum" class="spectrum" width="150" height="36"></canvas>
+      <button id="btn-mute" class="pc-btn" title="静音 (M)">
+        <svg class="vol-on" viewBox="0 0 24 24" width="19" height="19"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="vol-off" viewBox="0 0 24 24" width="19" height="19" hidden><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><line x1="16" y1="9" x2="21" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="9" x2="16" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div id="volume-bar" class="volume-bar">
+        <div class="volume-fill" id="volume-fill"></div>
+        <div class="seek-thumb" id="volume-thumb"></div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-box" class="toast-box"></div>
+  <audio id="audio" preload="auto"></audio>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>

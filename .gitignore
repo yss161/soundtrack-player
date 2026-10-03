@@ -1,0 +1,20 @@
+# 下载输出（音乐文件不入库）
+downloads/
+*.part
+
+# musicdl 源码为外部依赖，按 README 指引单独下载放置
+musicdl-master/
+vendor/
+musicdl/
+
+# 运行产物
+musicdl_outputs/
+__pycache__/
+*.pyc
+
+# 编辑器/系统
+.mimosa/
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
